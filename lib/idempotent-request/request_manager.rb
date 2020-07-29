@@ -27,11 +27,7 @@ module IdempotentRequest
     def write(*data)
       status, headers, response = data
       response = response.body if response.respond_to?(:body)
-
-      if (200..226).cover?(status)
-        storage.write(key, payload(status, headers, response))
-      end
-
+      storage.write(key, payload(status, headers, response))
       data
     end
 
