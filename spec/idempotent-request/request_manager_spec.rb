@@ -56,7 +56,7 @@ RSpec.describe IdempotentRequest::RequestManager do
       end
 
       let(:payload) do
-        Oj.dump({
+        MessagePack.pack({
           status: data[0],
           headers: data[1],
           response: data[2]
@@ -104,7 +104,7 @@ RSpec.describe IdempotentRequest::RequestManager do
 
   describe '#write' do
     let(:payload) do
-      Oj.dump({
+      MessagePack.pack({
         status: data[0],
         headers: data[1],
         response: [data[2]]

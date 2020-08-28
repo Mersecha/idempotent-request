@@ -36,13 +36,15 @@ module IdempotentRequest
     def parse_data(data)
       return {} if data.to_s.empty?
 
-      Oj.load(data)
+      MessagePack.unpack(data)
     end
 
     def payload(status, headers, response)
-      Oj.dump(status: status,
-              headers: headers.to_h,
-              response: Array(response))
+      MessagePack.pack(
+        status: status,
+        headers: headers.to_h,
+        response: Array(response)
+      )
     end
 
     def run_callback(action, args)

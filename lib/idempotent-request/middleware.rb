@@ -47,7 +47,7 @@ module IdempotentRequest
     def concurrent_request_response
       status = 429
       headers = { 'Content-Type' => 'application/json' }
-      body = [ Oj.dump('error' => 'Concurrent requests detected') ]
+      body = [ "{\"error\":\"Concurrent requests detected\"}" ]
       request.env['idempotent.request']['concurrent_request_response'] = true
       Rack::Response.new(body, status, headers).finish
     end
