@@ -5,6 +5,7 @@ module IdempotentRequest
     def initialize(request, config)
       @request = request
       @storage = config.fetch(:storage)
+      @context = config[:context]
       @callback = config[:callback]
     end
 
@@ -54,7 +55,10 @@ module IdempotentRequest
     end
 
     def key
-      request.key
+      [
+        (@context.new(request).context if @context),
+        request.key
+      ].join('-')
     end
   end
 end

@@ -30,10 +30,11 @@ Or install it yourself as:
 # application.rb
 config.middleware.use IdempotentRequest::Middleware,
   storage: IdempotentRequest::RedisStorage.new(::Redis.current, expire_time: 1.day),
-  policy: YOUR_CLASS
+  policy: YOUR_CLASS,
+  cotext: YOUR_CLASS
 ```
 
-To define a policy, whether a request should be idempotent, you have to provider a class with the following interface:
+To define a policy, whether a request should be idempotent, you have to provide a class with the following interface:
 
 ```ruby
 class Policy
@@ -49,6 +50,23 @@ class Policy
 end
 ```
 
+To define a context, a namespace prefixed to the lookup key, you have to provide a class with the following interface:
+
+```ruby
+class Context
+  attr_reader :request
+
+  def initialize(request)
+    @request = request
+  end
+
+  def context
+    # returns a string that serves as prefix/namespace to the lookup key
+    "string of context"
+  end
+end
+```
+
 ### Example of integration for rails
 
 
@@ -56,7 +74,8 @@ end
 # application.rb
 config.middleware.use IdempotentRequest::Middleware,
   storage: IdempotentRequest::RedisStorage.new(::Redis.current, expire_time: 1.day),
-  policy: IdempotentRequest::Policy
+  policy: IdempotentRequest::Policy,
+  context: IdempotentRequest::Context
 
 config.idempotent_routes = [
   { controller: :'v1/transfers', action: :create },
@@ -84,6 +103,22 @@ module IdempotentRequest
 end
 ```
 
+```ruby
+# lib/idempotent-request/context.rb
+module IdempotentRequest
+  class Context
+    attr_reader :request
+
+    def initialize(request)
+      @request = request
+    end
+
+    def context
+      "myapplication"
+    end
+  end
+end
+```
 
 ### Use ActiveSupport::Notifications to read events
 
