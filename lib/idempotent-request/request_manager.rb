@@ -54,11 +54,12 @@ module IdempotentRequest
       @callback.new(request).send(action, args)
     end
 
+    def context
+      @context.new(request).context if @context
+    end
+
     def key
-      [
-        (@context.new(request).context if @context),
-        request.key
-      ].join('-')
+      [context, request.key].compact.join('-')
     end
   end
 end
