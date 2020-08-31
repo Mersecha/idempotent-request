@@ -31,7 +31,7 @@ Or install it yourself as:
 config.middleware.use IdempotentRequest::Middleware,
   storage: IdempotentRequest::RedisStorage.new(::Redis.current, expire_time: 1.day),
   policy: YOUR_CLASS,
-  cotext: YOUR_CLASS
+  context: YOUR_CLASS
 ```
 
 To define a policy, whether a request should be idempotent, you have to provide a class with the following interface:
